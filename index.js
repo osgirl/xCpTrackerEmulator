@@ -3,9 +3,9 @@ var program = require('commander');
 var dgram = require('dgram');
 var settings = require('./settings.js');
 var importtable = require('./table.js');
-var importmarkers = require ('./marker.js');
+var importmarkers = require('./marker.js');
 
-
+var buf = new Buffer(36);
 
 console.log('Table session emulator');
 
@@ -28,52 +28,60 @@ for (let i = 0; i < settings.TABLES; i++) {
 }
 
 setInterval(function() {
-            // Set new destination every 10 s
-            console.log('Update destination');
-            for (let i = 0; i < settings.TABLES; i++) {
-                myTables[i].update();
-            }   
+    // Set new destination every 10 s
+    console.log('Update destination');
+    for (let i = 0; i < settings.TABLES; i++) {
+        myTables[i].update();
+    }
 
-            // Update every 100ms
-            setInterval(function() {
+    // Update every 100ms
+    setInterval(function() {
+        // Reapeat over tables
+        for (let i = 0; i < settings.TABLES; i++) {
+
+            for (let j = 0; j < settings.MARKERS; j++) {
+                
+                if (myTables[i].markers[j].mover)
+                {
+                    // Move the marget marker!!
+                    myTables[i].markers[j].move();
                     
                     
+                    // Create the package
                     
+                    // Table ID
+                    buf.writeUInt16LE(i, 0);
+                    // Marker ID - random between 0-4                 
+                    buf.writeUInt16LE(j, 2);
+                    // rotation - set rotation to 0
+                    buf.writeFloatLE(0, 4);
+                    buf.writeFloatLE(0, 8);
+                    buf.writeFloatLE(0, 8);
+                    // translation
+                    buf.writeFloatLE(myTables[i].markers[j].targetPosition[0], 16);
+                    buf.writeFloatLE(myTables[i].markers[j].targetPosition[1], 20);
+                    buf.writeFloatLE(myTables[i].markers[j].targetPosition[2], 24);
                     
-                    var buf = new Buffer(36);
+                    // time            
+                    // touched
 
-                    // Reapeat over tables
-                    for (let i = 0; i < settings.MARKERS; i++) {
-                        // Table ID
-                        buf.writeUInt16LE(i, 0);
-                        // Marker ID - random between 0-4                 
-                        buf.writeUInt16LE(random(0, 4), 2);
-                        // rotation - set rotation to 0
-                        buf.writeFloatLE(0, 4);
-                        buf.writeFloatLE(0, 8);
-                        buf.writeFloatLE(0, 8);
-                        // translation
-                        buf.writeFloatLE(random(-0.5, 0.5), 16);
-                        buf.writeFloatLE(random(-0.5, 0.5), 20);
-                        buf.writeFloatLE(random(-0.5, 0.5), 24);
-                        // time            
-                        // touched
-
-                        client.send(buf, 0, buf.length, settings.StaticPort, program.server, function(err, bytes) {
-                            if (err) throw err;
-                           // console.log('UDP message sent to ' + program.server + ':' + settings.StaticPort);
-                        });
-                    }
-                }, 100)                
-            }, 3 * 1000);
-
-        function random(low, high) {
-            return Math.random() * (high - low) + low;
+                    client.send(buf, 0, buf.length, settings.StaticPort, program.server, function(err, bytes) {
+                        if (err) throw err;
+                        // console.log('UDP message sent to ' + program.server + ':' + settings.StaticPort);
+                    });   
+                }                
+            }
         }
-        
-        
-        // Form the message
-                /*
+    }, 100)
+}, 10 * 1000);
+
+function random(low, high) {
+    return Math.random() * (high - low) + low;
+}
+
+
+// Form the message
+/*
          // Read message from main project
          var marker = {
                     tableId: buf.readUInt16LE(i + 0),
@@ -84,5 +92,5 @@ setInterval(function() {
                     touched: false // modified later on
                 }
         */
-                //
-                //
+//
+//

@@ -10,34 +10,23 @@ module.exports = {
         this.markers = [];
         
         for (let i=0; i < settings.MARKERS; i++) {
-            this.markers.push(new marker.marker(this.tableId, i, 0.01))
+            this.markers.push(new marker.marker(this.tableId, i, 0.04))
         }    
 
-        this.update = function() {
-            
-            for (let j=0; j < settings.MARKERS; j++) {
-                
+        this.update = function() {            
+            for (let j=0; j < settings.MARKERS; j++) {                
                 if (0.9 < Math.random()) {
-                    this.markers[j].mover = true;
+                    this.markers[j].mover = true;  
+                    this.markers[j].updateTarget();                  
                     console.log('table ' + tableId + ' marker ' + j);
                 }
-            }
-            
-            /*
-            let markerIdsToUpdate = [0, 1, 2, 3, 4, 5];
-            for (let i = 0; i < markerIdsToUpdate.length; i++) {
-                // mark most as non movers
-                if (0.9 > Math.random()) {
-                    markerIdsToUpdate[i] = -1;
+                else
+                {
+                    this.markers[j].mover = false;
                 }
-            } 
-            */
-                       
+            }                       
         }
         
-        this.moveTo = function() {
-            //var res = smoothstep(from, to, delta);           
-        }
         function random(low, high) {
             return Math.random() * (high - low) + low;
         }
