@@ -15,10 +15,11 @@ module.exports = {
 
         this.update = function() {            
             for (let j=0; j < settings.MARKERS; j++) {                
-                if (0.9 < Math.random()) {
+                if (0.95 < Math.random()) {
                     this.markers[j].mover = true;  
                     this.markers[j].updateTarget();                  
-                    console.log('table ' + tableId + ' marker ' + j);
+                    console.log('Update for table ' + tableId + ' marker ' + j);
+                    console.log('New target: ' + this.markers[j].targetPosition[0])
                 }
                 else
                 {

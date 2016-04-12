@@ -16,6 +16,7 @@ module.exports = {
             var x = smoothstep(this.currentPosition[0], this.targetPosition[0], this.minMove);            
             var y = smoothstep(this.currentPosition[1], this.targetPosition[1], this.minMove);            
             var z = smoothstep(this.currentPosition[2], this.targetPosition[2], this.minMove);
+            console.log(x);
             this.currentPosition[0] = x;
             this.currentPosition[1] = y;
             this.currentPosition[2] = z;                                  

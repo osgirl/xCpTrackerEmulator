@@ -45,22 +45,20 @@ setInterval(function() {
                 {
                     // Move the marget marker!!
                     myTables[i].markers[j].move();
-                    
-                    
-                    // Create the package
+                    console.log('x ' +myTables[i].markers[j].currentPosition[0]);
                     
                     // Table ID
                     buf.writeUInt16LE(i, 0);
-                    // Marker ID - random between 0-4                 
+                    // Marker ID                 
                     buf.writeUInt16LE(j, 2);
                     // rotation - set rotation to 0
                     buf.writeFloatLE(0, 4);
                     buf.writeFloatLE(0, 8);
                     buf.writeFloatLE(0, 8);
                     // translation
-                    buf.writeFloatLE(myTables[i].markers[j].targetPosition[0], 16);
-                    buf.writeFloatLE(myTables[i].markers[j].targetPosition[1], 20);
-                    buf.writeFloatLE(myTables[i].markers[j].targetPosition[2], 24);
+                    buf.writeFloatLE(myTables[i].markers[j].currentPosition[0], 16);
+                    buf.writeFloatLE(myTables[i].markers[j].currentPosition[1], 20);
+                    buf.writeFloatLE(myTables[i].markers[j].currentPosition[2], 24);
                     
                     // time            
                     // touched
@@ -72,7 +70,7 @@ setInterval(function() {
                 }                
             }
         }
-    }, 100)
+    }, 1000)
 }, 10 * 1000);
 
 function random(low, high) {
