@@ -1,4 +1,5 @@
 var settings = require('settings.js');
+var smoothstep = require('smoothstep.js');
 import Marker from 'marker.js';
 
 export default class Table {
