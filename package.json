@@ -10,6 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "commander": "^2.9.0",
+    "es6-module-loader": "^0.17.11",
+    "mqtt": "^1.8.0",
     "smoothstep": "^1.0.1"
   }
 }

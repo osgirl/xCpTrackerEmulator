@@ -1,6 +1,6 @@
 // configuration
 module.exports = {
-    TABLES: 15,
+    TABLES: 5,
     MARKERS: 6,
     
     // MQTT broker instance to use
@@ -8,6 +8,8 @@ module.exports = {
     
     // Use static address and don't lookup using MQTT
     UseStaticServerUri: false,
+    
+    StaticPort: '666',
     
     // Address to use if UseStaticServerUri == true
     StaticServerUri: '192.168.2.16',
