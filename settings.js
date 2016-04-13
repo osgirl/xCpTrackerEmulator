@@ -12,7 +12,7 @@ module.exports = {
     StaticPort: '666',
     
     // Address to use if UseStaticServerUri == true
-    StaticServerUri: '192.168.2.16',
+    StaticServerUri: '192.168.1.1',
     
     // string ex: '192.168.1.10' or 'www.cp2015.nl'
     ServerUriTopic: 'cp2015/server-ip',
@@ -24,5 +24,9 @@ module.exports = {
     TrackerRunTopic: 'cp2015/run',
     
     // Interval at witch the table updates its state on the broker
-    TablePublishInterval: 10000,   
+    TablePublishInterval: 10000,  
+    
+    TableRadius: 0.35,
+    
+     
 }

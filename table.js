@@ -9,13 +9,14 @@ module.exports = {
         this.tableId = tableId;
         this.markers = [];
         
+        // Create markers for table and set random position
         for (let i=0; i < settings.MARKERS; i++) {
-            this.markers.push(new marker.marker(this.tableId, i, 0.04))
+            this.markers.push(new marker.marker(this.tableId, i, 0.01))
         }    
 
         this.update = function() {            
             for (let j=0; j < settings.MARKERS; j++) {                
-                if (0.95 < Math.random()) {
+                if (0.90 < Math.random()) {
                     this.markers[j].mover = true;  
                     this.markers[j].updateTarget();                  
                     console.log('Update for table ' + tableId + ' marker ' + j);
