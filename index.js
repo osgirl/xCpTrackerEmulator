@@ -5,8 +5,9 @@ var settings = require('./settings.js');
 var importtable = require('./table.js');
 var importmarkers = require('./marker.js');
 
+//var buf = new Buffer(36);
+var client = dgram.createSocket('udp4');
 var buf = new Buffer(36);
-
 console.log('Table session emulator');
 
 program
@@ -18,64 +19,58 @@ program
 
 console.log(' server: %j', program.server);
 console.log(' number of tables: %j', program.tables);
-console.log(' activity: %j', program.tables);
+console.log(' activity: %j', program.activity);
 
-var client = dgram.createSocket('udp4');
+
 var myTables = [];
 
 // Create table and markers and send start position
-for (let i = 0; i < settings.TABLES; i++) {
-    myTables.push(new importtable.Table(i));    
+for (let i = 0; i < program.tables; i++) {
+    myTables.push(new importtable.Table(i, program.activity));
 }
-// Send start package for all tables
-for (let i = 0; i < settings.TABLES; i++) {
-    for (let j = 0; j < settings.MARKERS; j++) {
-        //sendUDP(i,j);
-    }
-}
-
-
 
 setInterval(function() {
     // Set new destination every 10 s
     console.log('Update destination');
-    for (let i = 0; i < settings.TABLES; i++) {
+    for (let i = 0; i < program.tables; i++) {
         myTables[i].update();
     }
 
     // Update every 100ms
     setInterval(function() {
         // Reapeat over tables
-        for (let i = 0; i < settings.TABLES; i++) {
+        for (let i = 0; i < program.tables; i++) {
 
             for (let j = 0; j < settings.MARKERS; j++) {
 
                 if (myTables[i].markers[j].mover) {
                     // Move the target marker!!
                     myTables[i].markers[j].move();
+                    //sendUPD(i, j);
+
+                    console.log('sending udp')
                     console.log('> ' + myTables[i].markers[j].currentPosition[0].toFixed(2) + ' (target: ' + myTables[i].markers[j].targetPosition[0].toFixed(2) + ')');
-                    //sendUDP(i, j);
-                       buf.writeUInt16LE(i, 0);
-    // Marker ID                 
-    buf.writeUInt16LE(j, 2);
-    // rotation - set rotation to 0
-    buf.writeFloatLE(0, 4);
-    buf.writeFloatLE(0, 8);
-    buf.writeFloatLE(0, 8);
-    // translation
-    buf.writeFloatLE(myTables[i].markers[j].currentPosition[0], 16);
-    buf.writeFloatLE(myTables[i].markers[j].currentPosition[1], 20);
-    buf.writeFloatLE(0.3, 24);
+                    // Table ID
+                    buf.writeUInt16LE(i, 0);
+                    // Marker ID                 
+                    buf.writeUInt16LE(j, 2);
+                    // rotation - set rotation to 0
+                    buf.writeFloatLE(0, 4);
+                    buf.writeFloatLE(0, 8);
+                    buf.writeFloatLE(0, 8);
+                    // translation
+                    buf.writeFloatLE(myTables[i].markers[j].currentPosition[0], 16);
+                    buf.writeFloatLE(myTables[i].markers[j].currentPosition[1], 20);
+                    buf.writeFloatLE(0.3, 24);
 
-    // time            
-    // touched
+                    // time            
+                    // touched
 
-    client.send(buf, 0, buf.length, settings.StaticPort, program.server, function(err, bytes) {
-        if (err) throw err;
-        // console.log('UDP message sent to ' + program.server + ':' + settings.StaticPort);
-    });
-                   
-  
+                    client.send(buf, 0, buf.length, settings.StaticPort, program.server, function(err, bytes) {
+                        if (err) throw err;
+                        // console.log('UDP message sent to ' + program.server + ':' + settings.StaticPort);
+                    });
+
                 }
             }
         }
@@ -83,23 +78,24 @@ setInterval(function() {
 }, 5 * 1000);
 
 
-
-function sendUDP(table, marker) {
+// NOT USING THIS FUNCTION
+// DOES NOT SHOW MARKERS FOR SOME STRANGE REASON
+function sendUPD(table, marker) {
+    var buf = new Buffer(36);
     console.log('sending udp')
-    let i = parseInt(table);
-    let j = parseInt(marker);
+    console.log('> ' + myTables[table].markers[marker].currentPosition[0].toFixed(2) + ' (target: ' + myTables[table].markers[marker].targetPosition[0].toFixed(2) + ')');
     // Table ID
-    buf.writeUInt16LE(i, 0);
+    buf.writeUInt16LE(table, 0);
     // Marker ID                 
-    buf.writeUInt16LE(j, 2);
+    buf.writeUInt16LE(marker, 2);
     // rotation - set rotation to 0
     buf.writeFloatLE(0, 4);
     buf.writeFloatLE(0, 8);
     buf.writeFloatLE(0, 8);
     // translation
-    buf.writeFloatLE(myTables[i].markers[j].currentPosition[0], 16);
-    buf.writeFloatLE(myTables[i].markers[j].currentPosition[1], 20);
-    buf.writeFloatLE(0.3, 24);
+    buf.writeFloatLE(myTables[table].markers[marker].currentPosition[0], 16);
+    buf.writeFloatLE(myTables[table].markers[marker].currentPosition[1], 20);
+    buf.writeFloatLE(0.01, 24);
 
     // time            
     // touched
