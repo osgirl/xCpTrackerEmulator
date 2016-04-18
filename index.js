@@ -61,7 +61,7 @@ setInterval(function() {
                     // translation
                     buf.writeFloatLE(myTables[i].markers[j].currentPosition[0], 16);
                     buf.writeFloatLE(myTables[i].markers[j].currentPosition[1], 20);
-                    buf.writeFloatLE(0.3, 24);
+                    buf.writeFloatLE(0.55, 24);
 
                     // time            
                     // touched
